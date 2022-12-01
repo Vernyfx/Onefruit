@@ -1,0 +1,381 @@
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
+
+local Window = OrionLib:MakeWindow({Name = "One Fruit Simulator By VernyHub", HidePremium = false, SaveConfig = true, ConfigFolder = "OrionTest"})
+
+
+local Tab = Window:MakeTab({
+	Name = "Auto Punch/Sword/Defence",
+	Icon = "rbxassetid://4483345998",
+	PremiumOnly = false
+})
+
+local vu = game:GetService("VirtualUser")
+game:GetService("Players").LocalPlayer.Idled:connect(function()
+vu:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+wait(1)
+vu:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+end)
+
+_G.plrn = game.Players.LocalPlayer.Name
+
+local Section = Tab:AddSection({
+	Name = "Melee"
+})
+
+
+
+Tab:AddToggle({
+	Name = "Auto Punch",
+	Default = false,
+	Callback = function(Value)
+		_G.yes = Value;
+	end    
+})
+
+task.spawn(function()
+    while wait() do
+        if _G.yes then
+            game:GetService("ReplicatedStorage").RemoteEvent:FireServer({{"","Combat",1,false,workspace.__GAME.__Players[_G.plrn].Combat,"Melee"}})
+            wait(0.01)
+        end
+    end
+end)
+
+Tab:AddToggle({
+	Name = "Auto Ground Smash",
+	Default = false,
+	Callback = function(Value)
+		_G.no = Value;
+	end    
+})
+
+local Section = Tab:AddSection({
+	Name = "Defence"
+})
+
+
+
+task.spawn(function()
+    while wait() do
+        if _G.no then
+        game:GetService("ReplicatedStorage").RemoteEvent:FireServer({{"","skillsControl","Combat","Z","Hold",}})
+        wait(0.1)
+        game:GetService("ReplicatedStorage").RemoteEvent:FireServer({{"","skillsControl","Combat","Z","Release",}})      
+        wait(0.1)  
+        end
+    end
+end)
+
+Tab:AddToggle({
+	Name = "Auto Defence",
+	Default = false,
+	Callback = function(Value)
+		_G.yesnt = Value;
+	end    
+})
+
+task.spawn(function()
+    while wait() do
+        if _G.yesnt then
+            game:GetService("ReplicatedStorage").RemoteEvent:FireServer({{"","Combat",1,false,workspace.__GAME.__Players[_G.plrn].Combat,"Defence"}})
+            wait(0.01)
+        end
+    end
+end)
+
+
+local Section = Tab:AddSection({
+	Name = "Sword"
+})
+
+
+
+Tab:AddDropdown({
+	Name = "Select Sword Style",
+	Default = " ",
+	Options = {"1ss", "3ss"},
+	Callback = function(Value)
+		_G.ss = Value;
+	end    
+})
+
+Tab:AddToggle({
+	Name = "Auto Sword",
+	Default = false,
+	Callback = function(Value)
+		_G.please = Value;
+	end    
+})
+
+task.spawn(function()
+    while wait() do
+        if _G.please then
+            if _G.ss ~= nil then
+                game:GetService("ReplicatedStorage").RemoteEvent:FireServer({{"","Combat",5,false,workspace.__GAME.__Players[_G.plrn][_G.ss],"Sword"}})
+                wait(0.01)
+            end
+        end
+    end
+end)
+
+Tab:AddToggle({
+	Name = "Auto Calibre Phoenix",
+	Default = false,
+	Callback = function(Value)
+		_G.tysm = Value;
+	end    
+})
+
+task.spawn(function()
+    while wait() do
+        if _G.tysm then
+            if _G.ss ~= nil then
+                game:GetService("ReplicatedStorage").RemoteEvent:FireServer({{"","skillsControl",_G.ss,"Z","Hold",}})
+                wait(0.1)
+                game:GetService("ReplicatedStorage").RemoteEvent:FireServer({{"","skillsControl",_G.ss,"Z","Release",}})
+                wait(0.1)
+            end
+        end
+    end
+end)
+
+
+
+local Tab = Window:MakeTab({
+	Name = "Auto Farm",
+	Icon = "rbxassetid://4483345998",
+	PremiumOnly = false
+})
+
+
+
+local Section = Tab:AddSection({
+	Name = "Auto Farm"
+})
+
+
+
+Tab:AddDropdown({
+	Name = "Select World",
+	Default = " ",
+	Options = {"Ilha_01", "Ilha_02", "Ilha_03", "Ilha_04"},
+	Callback = function(Value)
+		_G.map = Value;
+	end    
+})
+
+
+Tab:AddToggle({
+	Name = "Auto Farm Selected World (With Combat)",
+	Default = false,
+	Callback = function(Value)
+		_G.autofarm = Value;
+	end    
+})
+
+task.spawn(function()
+    while wait() do
+        if _G.autofarm then
+            if _G.map ~= nil then
+                local maps = game:GetService("Workspace")["__GAME"]["__Mobs"][_G.map]
+
+                for i,v in ipairs(maps:GetChildren()) do
+                    if v:IsA("Model") then
+                        game:GetService("ReplicatedStorage").RemoteEvent:FireServer({{"","Combat",1,false,workspace.__GAME.__Players[_G.plrn].Combat,"Melee"},{"",workspace.__GAME.__Mobs[_G.map][v.Name],workspace.__GAME.__Players[_G.plrn].Combat}})
+                    end
+                end
+            end
+        end
+    end
+end)
+
+Tab:AddToggle({
+	Name = "Auto Farm Selected World (With Sword)",
+	Default = false,
+	Callback = function(Value)
+		_G.autofarm = Value;
+	end    
+})
+
+task.spawn(function()
+    while wait() do
+        if _G.autofarm then
+            if _G.map ~= nil then
+                local maps = game:GetService("Workspace")["__GAME"]["__Mobs"][_G.map]
+
+                for i,v in ipairs(maps:GetChildren()) do
+                    if v:IsA("Model") then
+                        game:GetService("ReplicatedStorage").RemoteEvent:FireServer({{"","Combat",1,false,workspace.__GAME.__Players[_G.plrn][_G.ss],"Sword"},{"",workspace.__GAME.__Mobs[_G.map][v.Name],workspace.__GAME.__Players[_G.plrn][_G.ss]}})
+                    end
+                end
+            end
+        end
+    end
+end)
+
+Tab:AddSlider({
+	Name = "Time To Wait To Teleport To Mobs",
+	Min = 0.5,
+	Max = 2,
+	Default = 1,
+	Color = Color3.fromRGB(255,255,255),
+	Increment = 0.1,
+	ValueName = "Seconds",
+	Callback = function(Value)
+		_G.tptime = Value;
+	end    
+})
+
+
+
+local hrp = game.Players.LocalPlayer.Character.HumanoidRootPart
+
+Tab:AddToggle({
+	Name = "Auto Teleport To Mobs",
+	Default = false,
+	Callback = function(Value)
+		_G.mobtp = Value;
+	end    
+})
+
+task.spawn(function()
+    while wait() do
+        if _G.mobtp then
+            if _G.map ~= nil then
+                local mobtp = game:GetService("Workspace")["__GAME"]["__Mobs"][_G.map]
+
+                for i,v in pairs(mobtp:GetChildren()) do
+                    if v:IsA("Model") then
+                        hrp.CFrame = v.NpcModel.HumanoidRootPart.CFrame * CFrame.new(0,0,15)
+                        task.wait(_G.tptime)
+                    end
+                end
+            end
+         end
+        task.wait(1)
+    end
+end)
+
+local quests = {}
+
+for i=1,12 do
+    table.insert(quests,i)
+end
+
+local Section = Tab:AddSection({
+	Name = "Auto Quest"
+})
+
+
+
+Tab:AddDropdown({
+	Name = "Select Quest Number",
+	Default = " ",
+	Options = quests,
+	Callback = function(Value)
+		_G.curquest = Value;
+	end    
+})
+
+Tab:AddSlider({
+	Name = "Time to Wait Every Quest",
+	Min = 10,
+	Max = 200,
+	Default = 10,
+	Color = Color3.fromRGB(255,255,255),
+	Increment = 1,
+	ValueName = "Seconds",
+	Callback = function(Value)
+		_G.time = Value;
+	end    
+})
+
+Tab:AddToggle({
+	Name = "Auto Claim Quest",
+	Default = false,
+	Callback = function(Value)
+		_G.autoq = Value;
+	end    
+})
+
+task.spawn(function()
+    while wait() do
+        if _G.curquest ~= nil then
+            if _G.time ~= nil then
+                if _G.autoq then
+                    game:GetService("ReplicatedStorage").RemoteEvent:FireServer({{"","GetQuest",tonumber(_G.curquest)}})
+                    wait(_G.time)
+                end
+            end
+        end
+    end
+end)
+
+
+local Tab = Window:MakeTab({
+	Name = "Misc",
+	Icon = "rbxassetid://4483345998",
+	PremiumOnly = false
+})
+
+Tab:AddSlider({
+	Name = "Change WalkSpeed",
+	Min = 50,
+	Max = 500,
+	Default = 50,
+	Color = Color3.fromRGB(255,255,255),
+	Increment = 10,
+	ValueName = "Speed",
+	Callback = function(Value)
+		_G.WS = Value;
+	end    
+})
+
+Tab:AddToggle({
+	Name = "Toggle Walk Speed",
+	Default = false,
+	Callback = function(Value)
+		_G.togWS = Value;
+	end    
+})
+
+task.spawn(function()
+    while wait() do
+        if _G.WS ~= nil then
+            if _G.togWS then
+                game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = _G.WS
+            end
+        end
+    end
+end)
+
+Tab:AddLabel("Anti Afk: ON!")
+
+
+Tab:AddButton({
+	Name = "Destroy UI",
+	Callback = function()
+        OrionLib:Destroy()
+  	end    
+})
+
+
+
+local Tab = Window:MakeTab({
+	Name = "Credits",
+	Icon = "rbxassetid://4483345998",
+	PremiumOnly = false
+})
+
+Tab:AddParagraph("Credits Below:","!IsagiYoichi#7765")
+
+Tab:AddParagraph("Join My Discord","https://discord.gg/GKGG2Gje")
+
+Tab:AddButton({
+	Name = "Copy Discord Link",
+	Callback = function()
+        setclipboard("https://discord.gg/GKGG2Gje")
+  	end    
+})
+
+OrionLib:Init()
